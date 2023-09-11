@@ -1,1 +1,1 @@
-# Topics-from-the-JavaScript-course
+# Yoga-WebSite

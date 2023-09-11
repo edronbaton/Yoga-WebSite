@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
     // Timer
 
-    let deadline = '2023-08-24';
+    let deadline = '2023-09-12';
 
     function getTimeRemaining(endtime) {
         let t = Date.parse(deadline) - Date.parse(new Date), // Отнимает от дедлайна настощене время и получаем миллисекунды
@@ -95,7 +95,93 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
     setClock('timer', deadline);
-});
+
+   //Model
+   let more = document.querySelector('.more'),
+      overlay = document.querySelector('.overlay'),
+      close = document.querySelector('.popup-close');
+
+
+    more.addEventListener('click', function () {
+        overlay.style.display = 'block'; // Делаю дбъект блоком
+        this.classList.add('more-splash'); // Добавляю класс more-splash
+        document.body.style.overflow = 'hidden'; // Свойство которое не повзваоляет крутить страницу
+    })
+
+    close.addEventListener('click', function () {
+        overlay.style.display = 'none';
+        more.classList.remove('more-splash')
+        document.body.style.overflow = ''; 
+        
+    })
+    let descriptionBlock = document.querySelector('.info');
+
+    descriptionBlock.addEventListener('click', function (event) {
+        if (event.target.matches('.description-btn')) {
+            overlay.style.display = 'block'; // Делаю дбъект блоком
+            this.classList.add('more-splash'); // Добавляю класс more-splash
+        }
+
+        
+    });
+    // FORM
+
+
+    let form = document.querySelector('.main-form'),
+        contactForm = document.querySelector('#form');
+
+    // Send Form
+    function SendForm(elem) {
+        let statusMsg = document.createElement('div'); // Создаю блок со статусом отправки
+        elem.appendChild(statusMsg);
+      
+        function postData(data) { // Создаю дочернюю функцию postData для отправки самого запроса
+          return new Promise(function(resolve, reject) { // Создаю новый промис 
+            let request = new XMLHttpRequest(); // Создаю новый запрос
+            request.open('POST', 'server.php'); // Устанавливаю метод запроса и путь к самоу серверу
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); // Создаю голову запроса
+            request.send(data); // Отправка
+      
+            request.addEventListener('readystatechange', function() { // Событие после подтверждения
+              if (request.readyState < 4) { // Проверяю на удачу
+                resolve(); // Успех
+              } else if (request.status == 200 && request.readyState === 4) {
+                resolve(); // Успех
+              } else {
+                reject(); // Ошибка
+              }
+            });
+          });
+        }
+      
+        elem.addEventListener('submit', function(event) { // Обработчик события submit
+          event.preventDefault(); // Метод для защиты от перезагрузки страницы
+       
+          let formContactData = new FormData(elem); // Создаю новый конструктор FormData (упаковщик для отправки на сервер)
+      
+          postData(formContactData)
+            .then(() => (statusMsg.textContent = 'Loading...')) //  Вывод пользователю о загрузке отправки
+            .then(() => (statusMsg.textContent = 'Success!')) //  Вывод пользователю о успешной отправки
+            .catch(() => (statusMsg.textContent = 'Failure.')) //  Вывод пользователю о неудачной отправке
+            .then(() => {
+              elem.reset(); // Отчистка инпутов после завершения всех методов
+            });
+        });
+      }
+      
+      
+      SendForm(contactForm);
+      SendForm(form);
+  
+})
+        
+        
+    
+
+
+        
+    
+
 
 
 
